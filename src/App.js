@@ -29,17 +29,60 @@ const choice = {
 
 
 function App() {
-  const [userSelect, setUserSelect] = useState(null)
-
+  const [userSelect, setUserSelect] = useState(null);
+  const [computerSelect, setComputerSelect] = useState(null);
+  const [result, setResult]=useState(""); //승패의 값
   const play=(userChoice)=>{
-    setUserSelect(choice[userChoice])
-    // console.log("선택됨!", userChoice);
-  }
+    setUserSelect(choice[userChoice]);
+    let computerChoice = randomChoice();
+    setComputerSelect(computerChoice);
+    setResult(judgement(choice[userChoice], computerChoice));
+  };
+
+
+  //컴퓨터 랜덤
+  const randomChoice=()=>{
+    let itemArray = Object.keys(choice); // 객체에 키값만 뽑아서 어레이(배열)로 만들어주는 함수 | let itemArray = ["rock", "scissors", "paper"];
+    console.log("item array", itemArray);
+    //Math.random은 0이상 1미만의 랜덤한 소수 생성, itemArray.length 3으로 0이상 3미만 랜덤 숫자 생성
+    let randomItem = Math.floor(Math.random()* itemArray.length) ; //아이템 어레이의 자리값? 만큼 랜덤으로 돌리고 소수점은 버리고 정수로 나오게
+    //itemArray가 rock, scissors, paper이니까 0이면 rock, 1이면 scissors로 선택됨
+    console.log("random value", randomItem);
+    let final = itemArray[randomItem];
+    return choice[final];
+  };
+
+
+
+  //상대와 가위, 바위, 보 해서 이길 가능성, 질 가능성 다 생각해보기
+  const judgement = (user, computer) =>{
+    console.log("user", user, "computer", computer);
+
+
+  // 주먹  빠  | 패
+  // 주먹  찌  | 승
+  // 주먹 주먹 | 무
+  // 찌   빠  | 승
+  // 찌  찌   | 무
+  // 찌  주먹 | 패
+  // 빠  빠   | 무
+  // 빠  찌   | 패
+  // 빠  주먹  | 승
+
+  if(user.name === computer.name){
+    return "tie";
+  }else if(user.name ==="rock")return computer.name === "scissors"? "win" : "lose";
+   else if(user.name === "scissors")return computer.name === "paper"? "win" : "lose";
+   else if(user.name === "paper")return computer.name === "rock"? "win" : "lose";
+  };
+  
+
+  
   return (
     <div>
     <div className='main'>
-      <Box title="You" item={userSelect}/>
-      {/* <Box title="Computer"/> */}
+      <Box title="You" item={userSelect} result={result}/>
+      <Box title="Computer" item={computerSelect} result={result}/>
     </div>
     <div className='main'>
       <button onClick={()=> play("scissors")}>가위</button>
